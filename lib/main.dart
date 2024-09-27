@@ -14,9 +14,9 @@ class MyApp extends StatelessWidget
   {
     return MaterialApp
     (
-      title: 'Flutter Demo',
+      title: 'Lab1',
       theme: ThemeData.dark(), 
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Lab1'),
     );
   }
 }
@@ -48,9 +48,12 @@ class _MyHomePageState extends State<MyHomePage>
     {
       String input = _controller.text;
 
-      if (input == "r" || input == "R") {
-        _counter = 0;
-      } else {
+      if (input == "r" || input == "R") 
+        {
+          _counter = 0;
+        } 
+      else 
+        {
         int? incrementValue = int.tryParse(input);
         if (incrementValue != null) {
           _counter += incrementValue;
