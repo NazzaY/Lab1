@@ -1,115 +1,282 @@
 import 'package:flutter/material.dart';
 
-void main() 
-{
-  runApp(const MyApp());
-}
+void main() => runApp(const MyApp());
 
-class MyApp extends StatelessWidget 
-{
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) 
-  {
-    return MaterialApp
-    (
-
-      title: 'Lab1',
-      theme: ThemeData.dark(), 
-      home: const MyHomePage(title: 'Lab1'),
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.dark, 
+        primarySwatch: Colors.red, 
+      ),
+      home: const LoginPage(), 
     );
   }
 }
 
-class MyHomePage extends StatefulWidget 
-{
-  const MyHomePage({super.key, required this.title});
 
-  final String title;
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Login')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CustomTextField(label: 'Email'),
+            const CustomTextField(label: 'Password'),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<MainPage>(builder: (context) => 
+                  const MainPage(),),
+                );
+              },
+              child: const Text('Login'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<MainPage>(builder: (context) => 
+                  const MainPage(),),
+                );
+              },
+              child: const Text('Register'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _MyHomePageState extends State<MyHomePage> 
-{
-  int _counter = 0;
-  final TextEditingController _controller = TextEditingController();
+
+class RegistrationPage extends StatelessWidget {
+  const RegistrationPage({super.key});
 
   @override
-  void initState() 
-  {
-    super.initState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Registration')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CustomTextField(label: 'Email'),
+            const CustomTextField(label: 'Password'),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<MainPage>(builder: (context) =>
+                   const MainPage(),),
+                );
+              },
+              child: const Text('Register'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
+}
 
-  void _incrementCounter() 
-  {
-    setState(() 
-    {
-      String input = _controller.text;
 
-      if (input == "r" || input == "R") 
-        {
-          _counter = 0;
-        } 
-      else 
-        {
-        int? incrementValue = int.tryParse(input);
-        if (incrementValue != null) {
-          _counter += incrementValue;
-        }
-      }
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
+  @override
+  MainPageState createState() => MainPageState();
+}
+
+class MainPageState extends State<MainPage> {
+  int _selectedIndex = 0;
+
+
+  static const List<Widget> _pages = <Widget>[
+    ComicListPage(),
+    ProfilePage(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
     });
   }
 
   @override
-  Widget build(BuildContext context) 
-  {
-    return Scaffold
-    (
-      appBar: AppBar
-      (
-        title: Text(widget.title),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: _pages[_selectedIndex],
       ),
-      body: Center
-      (
-        child: Column
-        (
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.redAccent,
+        onTap: _onItemTapped,
+      ),
+    );
+  }
+}
+
+
+class ComicListPage extends StatelessWidget {
+  const ComicListPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Comics Library'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8),
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+          ),
+          itemCount: 6,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<ComicDetailPage>(builder: (context) => 
+                  ComicDetailPage(index: index),),
+
+                );
+              },
+              child: ComicCard(index: index), 
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+      ),
+      body: const Center(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>
-          [
-            Text
-            (
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+          children: [
+            Text('User Profile'),
+            Text('Email'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+class ComicCard extends StatelessWidget {
+  final int index;
+  const ComicCard({required this.index, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5, 
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          Expanded(
+            child: Image.network(
+              'https://m.media-amazon.com/images/M/MV5BNTkxZjhhOWItZDk1Yy00ZTBiLWE5YzgtYWU0MjAyOWQ1NjhhXkEyXkFqcGc@._V1_.jpg', 
+              fit: BoxFit.cover,
             ),
-            Padding
-            (
-              padding: const EdgeInsets.all(16.0),
-              child: TextField
-              (
-                controller: _controller,
-                decoration: const InputDecoration
-                (
-                  border: OutlineInputBorder(),
-                  labelText: 'Num to add',
-                ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Text('Comic #$index', style: const 
+            TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class ComicDetailPage extends StatelessWidget {
+  final int index;
+  const ComicDetailPage({required this.index, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Comic #$index'),
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Expanded(
+              child: Image.network(
+                'https://m.media-amazon.com/images/M/MV5BNTkxZjhhOWItZDk1Yy00ZTBiLWE5YzgtYWU0MjAyOWQ1NjhhXkEyXkFqcGc@._V1_.jpg', 
+                fit: BoxFit.cover,
               ),
             ),
-            const Text
-            (
-              '[R]eset counter',
-              style: TextStyle(color: Colors.grey),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                'Comic #$index - Full Comic View',
+                style: const TextStyle(fontSize: 20, 
+                fontWeight: FontWeight.bold,),
+              ),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton
-            (
-              onPressed: _incrementCounter,
-              child: const Text('Add'),
-            ),
-            const SizedBox(height: 20), 
           ],
+        ),
+      ),
+    );
+  }
+}
+
+
+class CustomTextField extends StatelessWidget {
+  final String label;
+
+  const CustomTextField({required this.label, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: TextField(
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: label,
         ),
       ),
     );
